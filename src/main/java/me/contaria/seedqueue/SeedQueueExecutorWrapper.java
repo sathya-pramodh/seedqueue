@@ -27,8 +27,10 @@ public class SeedQueueExecutorWrapper implements Executor {
      * Redirects to the backing executors depending on the current state.
      */
     public static final Executor SEEDQUEUE_EXECUTOR = command -> getSeedqueueExecutor().execute(command);
+    public static final Executor LOCKED_EXECUTOR = command -> getOrCreateLockedExecutor().execute(command);
 
     private static ExecutorService SEEDQUEUE_BACKGROUND_EXECUTOR;
+    private static ExecutorService SEEDQUEUE_LOCKED_EXECUTOR;
     private static ExecutorService SEEDQUEUE_WALL_EXECUTOR;
 
     private final Executor originalExecutor;
@@ -73,6 +75,14 @@ public class SeedQueueExecutorWrapper implements Executor {
         }
         return SEEDQUEUE_WALL_EXECUTOR;
     }
+
+    public synchronized static Executor getOrCreateLockedExecutor() {
+        if (SEEDQUEUE_LOCKED_EXECUTOR == null) {
+            SEEDQUEUE_LOCKED_EXECUTOR = createExecutor("SeedQueue Locked", SeedQueue.config.getLockedExecutorThreads(), SeedQueue.config.lockedExecutorThreadPriority);
+        }
+        return SEEDQUEUE_LOCKED_EXECUTOR;
+    }
+
 
     // see Util#createWorker
     private static ExecutorService createExecutor(String name, int threads, int priority) {

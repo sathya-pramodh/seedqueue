@@ -153,6 +153,14 @@ public class SeedQueueConfig implements SpeedrunConfig {
     public int wallExecutorThreadPriority = 4;
 
     @Config.Category("threading")
+    @Config.Numbers.Whole.Bounds(min = 0, max = 32, enforce = Config.Numbers.EnforceBounds.MIN_ONLY)
+    protected int lockedExecutorThreads = AUTO;
+
+    @Config.Category("threading")
+    @Config.Numbers.Whole.Bounds(min = Thread.MIN_PRIORITY, max = Thread.NORM_PRIORITY)
+    public int lockedExecutorThreadPriority = 5;
+
+    @Config.Category("threading")
     @Config.Numbers.Whole.Bounds(min = 0, max = 8, enforce = Config.Numbers.EnforceBounds.MIN_ONLY)
     private int chunkUpdateThreads = AUTO;
 
@@ -215,6 +223,13 @@ public class SeedQueueConfig implements SpeedrunConfig {
             return Math.max(1, PROCESSORS);
         }
         return this.wallExecutorThreads;
+    }
+
+    public int getLockedExecutorThreads() {
+        if (this.lockedExecutorThreads == AUTO) {
+            return Math.max(1, PROCESSORS);
+        }
+        return this.lockedExecutorThreads;
     }
 
     /**
