@@ -213,12 +213,8 @@ public abstract class MinecraftClientMixin {
         }
         original.call(client, server);
         if (SeedQueue.currentEntry != null) {
-            if (SeedQueue.currentEntry.isLocked() && !SeedQueue.currentEntry.isLoaded()) {
-                ((SQMinecraftServer) server).seedQueue$setExecutor(SeedQueueExecutorWrapper.LOCKED_EXECUTOR);
-            } else {
-                ((SQMinecraftServer) server).seedQueue$resetExecutor();
-                SeedQueue.currentEntry.load();
-            }
+            ((SQMinecraftServer) server).seedQueue$resetExecutor();
+            SeedQueue.currentEntry.load();
         }
     }
 

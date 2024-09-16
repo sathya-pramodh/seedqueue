@@ -323,6 +323,7 @@ public class SeedQueueEntry {
     public boolean lock() {
         if (!this.locked) {
             this.locked = true;
+            ((SQMinecraftServer) this.getServer()).seedQueue$setExecutor(SeedQueueExecutorWrapper.LOCKED_EXECUTOR);
             SeedQueue.ping();
             return true;
         }
